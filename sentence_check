@@ -1,0 +1,90 @@
+import java.util.Scanner;
+
+public class sentence_check {
+	
+	//returns true if valid sentence
+	public static boolean check(String sentence) {
+		int valid = 0; //counter for each rule
+		int number_check = 0; //counter for if there are numbers in the sentence
+		
+		//capital letter at start of sentence check
+		if (Character.isUpperCase(sentence.charAt(0))) {
+			valid++;
+		}
+		
+		//sentence ending in termination character check
+		char period = sentence.charAt(sentence.length()-1);
+		if (period == '?' || period == '.' || period == '!') {
+			valid++;
+		}
+			
+		//even number of quotation marks check
+		int quotations = 0;
+		//for loop to check each character
+		//ends at second last character, as final character has already been checked
+		for (int i=0;i<sentence.length()-1;i++) {
+			char character = sentence.charAt(i);
+			if (character == '"') {
+				quotations++; //increments quotation variable if " is found
+			}	
+				
+			//no period characters in middle of sentence check
+			if (character == '.' || character == '?' || character == '!') {
+				valid = 0; //resets valid counter if a termination character is found in the middle of a sentence
+			}
+							
+			//number below 13 check
+			char second_digit = sentence.charAt(i+1);
+			String number = ""; // variable to add digits to a string
+			if (Character.isDigit(character)) {
+				number += character;
+				if (Character.isDigit(sentence.charAt(i-1))) {
+					number = ""; //for loop causes second digit to be checked again, so if the character before it is a digit, it will reset the string number
+				}
+				if (Character.isDigit(second_digit)) {
+					number += second_digit; //number not contains full digit in string
+				}
+				
+				//if the number string is not NULL, it will convert it to a integer
+				if (number != "") {
+					int digit = Integer.parseInt(number);
+					//checks if number is 13 or above
+					if (digit > 12) {
+						number_check++; //increments number counter
+					} else {
+						valid = 0; //if it is less than 13, valid counter is reset
+					}
+				}
+			}
+		}
+		
+		//even number of quotation marks will increment valid counter
+		if (quotations%2 == 0) {
+			valid++;
+		}
+				
+		/* returns true if sentence is valid
+		 * check for valid==3 i.e. Capital letter, termination character and even number of quotations
+		 * but sentence does NOT contain any digits*/
+		/* valid==3 AND number_check>0 is when a digit is found in the sentence
+		 * and the digit found is more than 12 */
+		if (valid == 3 || (valid == 3 && number_check > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+}
+
+	public static void main(String[] args) {
+		System.out.println("Enter valid sentence: ");
+		Scanner input = new Scanner(System.in);
+		String sentence = input.nextLine();
+		if (check(sentence) == true) {
+			System.out.println("Valid");
+		} else {
+			System.out.println("Not valid");
+		}
+		input.close();
+	}
+
+}
